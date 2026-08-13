@@ -1,4 +1,4 @@
-# docker-compose.yml (raiz do projeto)
+# techdesk/docker-compose.yml
 version: '3.8'
 
 services:
@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: techdesk123
       MYSQL_DATABASE: techdesk_chamados
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
 
