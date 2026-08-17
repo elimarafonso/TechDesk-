@@ -1,4 +1,4 @@
-package com.techdesk.techdesk_chamados_api.entity;
+package com.techdesk.techdesk.chamados.entity;
 
 // 📁 techdesk-chamados-api/src/main/java/com/techdesk/chamados/entity/StatusChamado.java
 

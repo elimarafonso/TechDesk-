@@ -1,11 +1,11 @@
-package com.techdesk.techdesk_chamados_api.entity;
+package com.techdesk.techdesk.chamados.entity;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chamados")
+@Table(name = "chamadoss")
 public class Chamado {
 
     @Id
@@ -25,20 +25,20 @@ public class Chamado {
     private LocalDateTime dataFechamento;
 
     // Relacionamento N:1 — vários chamados pertencem a UMA categoria
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria categoria;
+ //   @ManyToOne
+ //   @JoinColumn(name = "categoria_id")
+ //   private Categoria categoria;
 
 
     // Relacionamento N:1 — vários chamados podem ser atendidos por UM técnico
-    @ManyToOne
-    @JoinColumn(name = "tecnico_id")
-    private Tecnico tecnico;
+ //   @ManyToOne
+ //   @JoinColumn(name = "tecnico_id")
+ //   private Tecnico tecnico;
 
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+  //  @ManyToOne
+  //  @JoinColumn(name = "usuario_id", nullable = false)
+   // private Usuario usuario;
 
     public Chamado() {
     }
@@ -50,9 +50,9 @@ public class Chamado {
         this.statusChamado = statusChamado;
         this.dataAbertura = dataAbertura;
         this.dataFechamento = dataFechamento;
-        this.categoria = categoria;
-        this.tecnico = tecnico;
-        this.usuario = usuario;
+   //     this.categoria = categoria;
+   //     this.tecnico = tecnico;
+   //     this.usuario = usuario;
     }
 
     public void setId(Long id) {
@@ -79,17 +79,7 @@ public class Chamado {
         this.dataFechamento = dataFechamento;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
 
-    public void setTecnico(Tecnico tecnico) {
-        this.tecnico = tecnico;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 
     public Long getId() {
         return id;
@@ -115,15 +105,5 @@ public class Chamado {
         return dataFechamento;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
 
-    public Tecnico getTecnico() {
-        return tecnico;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
 }

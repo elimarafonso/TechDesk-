@@ -1,0 +1,10 @@
+package com.techdesk.techdesk.chamados.exceptions;
+
+public class ChamadoNaoEncontradoException extends Exception {
+
+	private static final long serialVersionUID = 1L;
+
+	public ChamadoNaoEncontradoException(String string) {
+        super("Chamado não encontrada com id: "+ string );
+    }
+}
