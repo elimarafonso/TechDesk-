@@ -1,8 +1,8 @@
 package com.techdesk.techdesk.chamados.service;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
@@ -10,7 +10,8 @@ import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
 import com.techdesk.techdesk.chamados.entity.Categoria;
 import com.techdesk.techdesk.chamados.exceptions.ChamadoNaoEncontradoException;
 import com.techdesk.techdesk.chamados.repository.CategoriaRepository;
-@Service 
+
+@Service
 public class CategoriaService {
 
 	private final CategoriaRepository categoriaRepository;
@@ -28,24 +29,34 @@ public class CategoriaService {
 
 	}
 
-
-
 	public List<CategoriaResponseDTO> findAll() throws Throwable {
-		return categoriaRepository.findAll().stream()
-	             .map(t -> {
-					try {
-						return toCategoryDto(t);
-					} catch (Throwable e) {
-						// TODO Auto-generated catch block
-						new ChamadoNaoEncontradoException(e.getMessage());
-					}
-					return null;
-				})
-	             .toList();
+		return categoriaRepository.findAll().stream().map(t -> {
+			try {
+				return toCategoryDto(t);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				new ChamadoNaoEncontradoException(e.getMessage());
+			}
+			return null;
+		}).toList();
 	}
-	
-	
+
 	private CategoriaResponseDTO toCategoryDto(Categoria toDto) {
-		return new CategoriaResponseDTO(toDto.getId(),toDto.getNome());
+		return new CategoriaResponseDTO(toDto.getId(), toDto.getNome());
+	}
+
+	public CategoriaResponseDTO buscar(Long id) throws Exception {
+		Categoria cat = categoriaRepository.findById(id).orElseThrow(() -> new Exception());
+		
+
+		return toCategoryDto(cat);
+	}
+
+	public void excluirCategoria(Long id) throws Exception {
+		if (!categoriaRepository.existsById(id)) {
+			throw new Exception();
+		}
+		
+	    categoriaRepository.deleteById(id);
 	}
 }
