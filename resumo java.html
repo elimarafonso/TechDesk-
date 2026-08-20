@@ -666,6 +666,13 @@ public class ProdutoController {
       </div>
 
       <div class="card">
+        <h3>DTO de erro (ErroDTO)</h3>
+        <p class="theory"><strong>Quando usar:</strong> como corpo de resposta padronizado sempre que o <span class="mono">GlobalExceptionHandler</span> precisa devolver um erro em JSON — é a versão simples de resposta de erro, alternativa ao <span class="mono">ProblemDetail</span> já embutido no Spring (ver último card desta seção). <strong>Como funciona:</strong> é só um <span class="mono">record</span> com um campo <span class="mono">mensagem</span> — a mesma ideia do <span class="mono">ProdutoDTO</span> (seção DTO), só que para representar erros em vez de produtos; por ser um record, o Jackson serializa automaticamente para JSON, sem nenhuma configuração extra. <strong>Relacionado a:</strong> usado como tipo de retorno pelos métodos <span class="mono">@ExceptionHandler</span> do <span class="mono">GlobalExceptionHandler</span> — aparece nos dois cards seguintes, "Handler global" e "Tratando erros de validação".</p>
+        <pre><code class="language-java">public record ErroDTO(String mensagem) {}</code></pre>
+        <div class="result-box"><span class="result-label">Resultado esperado</span><p><span class="mono">new ErroDTO("Produto não encontrado: 99")</span> é serializado pelo Jackson como <span class="mono">{"mensagem":"Produto não encontrado: 99"}</span> no corpo da resposta HTTP.</p></div>
+      </div>
+
+      <div class="card">
         <h3>Handler global</h3>
         <p class="theory"><strong>Quando usar:</strong> uma única vez por aplicação — é o ponto central que converte exceções Java em respostas HTTP consistentes. <strong>Como funciona:</strong> <span class="mono">@RestControllerAdvice</span> registra a classe como interceptador global; quando uma exceção do tipo declarado sobe sem ser capturada em nenhum lugar (geralmente lançada dentro de um Service), o método anotado com <span class="mono">@ExceptionHandler</span> correspondente é chamado automaticamente. <strong>Relacionado a:</strong> intercepta exceções vindas de qualquer Controller/Service da aplicação, incluindo <span class="mono">ProdutoNaoEncontradoException</span>.</p>
         <pre><code class="language-java">@RestControllerAdvice
