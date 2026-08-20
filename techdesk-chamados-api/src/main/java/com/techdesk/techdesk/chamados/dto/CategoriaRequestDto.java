@@ -1,7 +1,7 @@
 package com.techdesk.techdesk.chamados.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record CategoriaRequestDto(
-			@NotNull String nome
+		@NotBlank(message = "nome é obrigatório") String nome
 ){}

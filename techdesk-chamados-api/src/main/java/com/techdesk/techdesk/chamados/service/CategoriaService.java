@@ -1,13 +1,13 @@
 package com.techdesk.techdesk.chamados.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
 import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
 import com.techdesk.techdesk.chamados.entity.Categoria;
+import com.techdesk.techdesk.chamados.exceptions.CategoriaNaoEncontradaException;
 import com.techdesk.techdesk.chamados.exceptions.ChamadoNaoEncontradoException;
 import com.techdesk.techdesk.chamados.repository.CategoriaRepository;
 
@@ -46,17 +46,20 @@ public class CategoriaService {
 	}
 
 	public CategoriaResponseDTO buscar(Long id) throws Exception {
-		Categoria cat = categoriaRepository.findById(id).orElseThrow(() -> new Exception());
-		
+		try {
+			Categoria cat = categoriaRepository.findById(id).orElseThrow(() -> new Exception());
+			return toCategoryDto(cat);
+		} catch (Exception e) {
+			throw new CategoriaNaoEncontradaException(id);
+		}
 
-		return toCategoryDto(cat);
 	}
 
 	public void excluirCategoria(Long id) throws Exception {
 		if (!categoriaRepository.existsById(id)) {
 			throw new Exception();
 		}
-		
-	    categoriaRepository.deleteById(id);
+
+		categoriaRepository.deleteById(id);
 	}
 }

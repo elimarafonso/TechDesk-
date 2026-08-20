@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,11 @@ import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
 import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
 import com.techdesk.techdesk.chamados.service.CategoriaService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+
 @RestController
+@Validated
 @RequestMapping("api/categoria")
 public class CategoriaController {
 
@@ -27,7 +32,7 @@ public class CategoriaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody CategoriaRequestDto categoria) {
+	public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody @Valid  CategoriaRequestDto categoria) {
 			CategoriaResponseDTO cat = service.criar(categoria);
 		return ResponseEntity.status(HttpStatus.CREATED).body(cat);
 	}
@@ -39,7 +44,7 @@ public class CategoriaController {
 	}
 
 	@GetMapping("/{id}")
-	public	ResponseEntity<CategoriaResponseDTO> buscaCategoria (@PathVariable Long id) throws Exception {
+	public	ResponseEntity<CategoriaResponseDTO> buscaCategoria (@PathVariable @Positive Long id) throws Exception {
 		return ResponseEntity.ok(service.buscar(id));
 	}
 	
