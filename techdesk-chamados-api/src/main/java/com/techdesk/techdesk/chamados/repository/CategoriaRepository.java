@@ -12,6 +12,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long>{
 
 	List<Categoria> findByNome(String nome);
 	
-	Optional findById(Long id);
+
 	
 }

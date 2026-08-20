@@ -35,7 +35,7 @@ public class ChamadoService {
      Chamado chamado = new Chamado();
      chamado.setTitulo(dto.titulo());
      chamado.setDescricao(dto.descricao());
- //    chamado.setCategoria(categoria);
+     chamado.setCategoria(categoria);
      chamado.setStatusChamado(StatusChamado.ABERTO);
      chamado.setDataAbertura(LocalDateTime.now());
      //chamado.setUsuario(usuarioLogado);
@@ -87,7 +87,7 @@ public class ChamadoService {
  private ChamadoResponseDTO toResponseDTO(Chamado c) throws Throwable {
      return new ChamadoResponseDTO(
              c.getId(), c.getTitulo(), c.getDescricao(),
-             c.getStatusChamado(),  null, c.getDataAbertura()
+             c.getStatusChamado(),  c.getCategoria().getNome(), c.getDataAbertura()
      );
  }
 }

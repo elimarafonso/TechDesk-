@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.techdesk.techdesk.chamados.dto.ChamadoRequestDTO;
 import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
 import com.techdesk.techdesk.chamados.entity.StatusChamado;
-import com.techdesk.techdesk.chamados.entity.Usuario;
 import com.techdesk.techdesk.chamados.service.ChamadoService;
 
-import jakarta.validation.Valid;
 
 
 @RestController
