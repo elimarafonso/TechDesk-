@@ -22,7 +22,7 @@ import com.techdesk.techdesk.chamados.service.ChamadoService;
 
 
 @RestController
-@RequestMapping("/api/chamados")
+@RequestMapping("/api/chamado")
 public class ChamadoController {
 
  private final ChamadoService service;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.techdesk.techdesk.chamados.TechdeskChamadosApiApplication;
 import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
 import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
 import com.techdesk.techdesk.chamados.entity.Categoria;
@@ -14,10 +15,12 @@ import com.techdesk.techdesk.chamados.repository.CategoriaRepository;
 @Service
 public class CategoriaService {
 
+	private final TechdeskChamadosApiApplication techdeskChamadosApiApplication;
 	private final CategoriaRepository categoriaRepository;
 
-	public CategoriaService(CategoriaRepository categoriaRepository) {
+	public CategoriaService(CategoriaRepository categoriaRepository, TechdeskChamadosApiApplication techdeskChamadosApiApplication) {
 		this.categoriaRepository = categoriaRepository;
+		this.techdeskChamadosApiApplication = techdeskChamadosApiApplication;
 	}
 
 	public CategoriaResponseDTO criar(CategoriaRequestDto categoriaDto) {
@@ -41,9 +44,7 @@ public class CategoriaService {
 		}).toList();
 	}
 
-	private CategoriaResponseDTO toCategoryDto(Categoria toDto) {
-		return new CategoriaResponseDTO(toDto.getId(), toDto.getNome());
-	}
+
 
 	public CategoriaResponseDTO buscar(Long id) throws Exception {
 		try {
@@ -61,5 +62,22 @@ public class CategoriaService {
 		}
 
 		categoriaRepository.deleteById(id);
+	}
+
+	public CategoriaResponseDTO atualiza(Long id, CategoriaRequestDto newCategoria) {
+
+		Categoria oldCategoria = categoriaRepository.findById(id)
+																.orElseThrow(() -> new CategoriaNaoEncontradaException(id) );
+		oldCategoria.setNome(newCategoria.nome());
+		categoriaRepository.save(oldCategoria);
+		
+		return toCategoryDto(oldCategoria); 
+		
+	}
+	
+
+	
+	private CategoriaResponseDTO toCategoryDto(Categoria toDto) {
+		return new CategoriaResponseDTO(toDto.getId(), toDto.getNome());
 	}
 }
