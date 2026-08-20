@@ -14,4 +14,9 @@ import com.techdesk.techdesk.chamados.entity.StatusChamado;
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
  List<Chamado> findByStatusChamado(StatusChamado statusChamado);
 // List<Chamado> findByTecnicoId(Long tecnicoId);
+ 
+ boolean existsByCategoriaId(Long categoriaId);
+	
+
+ 
 }

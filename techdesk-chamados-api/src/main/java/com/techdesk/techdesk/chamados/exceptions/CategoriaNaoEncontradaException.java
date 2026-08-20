@@ -1,7 +1,5 @@
 package com.techdesk.techdesk.chamados.exceptions;
 
-import org.jspecify.annotations.Nullable;
-
 public class CategoriaNaoEncontradaException extends RuntimeException {
 	  
 	private final Long id;

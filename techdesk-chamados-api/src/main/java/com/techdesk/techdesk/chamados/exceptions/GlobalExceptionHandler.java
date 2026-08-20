@@ -31,4 +31,27 @@ public class GlobalExceptionHandler {
 		return problem;
 	}
 
+	@ExceptionHandler(CategoriaJaExisteException.class)
+	public ProblemDetail categoriaJaExisteException(CategoriaJaExisteException ex) {
+
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+		
+		problem.setTitle("já existe esta categoria");
+		problem.setDetail(ex.getMessage());
+		
+		return problem;
+	}
+	
+	
+	@ExceptionHandler(CategoriaPossuiChamadosException.class)
+	public ProblemDetail categoriaPossuiChamadosException(CategoriaPossuiChamadosException ex) {
+
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+		
+		problem.setTitle("Existem chamados para esta categoria.");
+		problem.setDetail(ex.getMessage());
+		
+		return problem;
+	}
+	
 }

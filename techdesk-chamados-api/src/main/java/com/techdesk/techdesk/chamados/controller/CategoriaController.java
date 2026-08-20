@@ -36,7 +36,7 @@ public class CategoriaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody @Valid  CategoriaRequestDto categoria) {
+	public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody @Valid  CategoriaRequestDto categoria) throws Throwable {
 			CategoriaResponseDTO cat = service.criar(categoria);
 		return ResponseEntity.status(HttpStatus.CREATED).body(cat);
 	}
