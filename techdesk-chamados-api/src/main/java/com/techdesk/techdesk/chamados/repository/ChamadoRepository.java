@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.techdesk.techdesk.chamados.entity.Categoria;
 import com.techdesk.techdesk.chamados.entity.Chamado;
 import com.techdesk.techdesk.chamados.entity.StatusChamado;
 
@@ -16,6 +17,8 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 // List<Chamado> findByTecnicoId(Long tecnicoId);
  
  boolean existsByCategoriaId(Long categoriaId);
+
+ List<Chamado> findByCategoria(Categoria categoria);
 	
 
  

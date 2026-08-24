@@ -54,4 +54,18 @@ public class GlobalExceptionHandler {
 		return problem;
 	}
 	
+	@ExceptionHandler(StatusChamadoNaoExisteException.class)
+	public ProblemDetail statusChamadoNaoExisteException(StatusChamadoNaoExisteException ex) {
+
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+		
+		problem.setTitle("Status Invalido.");
+		problem.setDetail(ex.getMessage());
+		
+		return problem;
+	}
+	
+	
+	
+	
 }

@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.techdesk.techdesk.chamados.dto.CategoriaPatchRequestDto;
 import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
 import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
+import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
 import com.techdesk.techdesk.chamados.service.CategoriaService;
 
 import jakarta.validation.Valid;
@@ -36,32 +38,44 @@ public class CategoriaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody @Valid  CategoriaRequestDto categoria) throws Throwable {
-			CategoriaResponseDTO cat = service.criar(categoria);
+	public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody @Valid CategoriaRequestDto categoria)
+			throws Throwable {
+		CategoriaResponseDTO cat = service.criar(categoria);
 		return ResponseEntity.status(HttpStatus.CREATED).body(cat);
 	}
-	
+
 	@GetMapping
 	public List<CategoriaResponseDTO> findAll() throws Throwable {
-		
+
 		return service.findAll();
 	}
 
 	@GetMapping("/{id}")
-	public	ResponseEntity<CategoriaResponseDTO> buscaCategoria (@PathVariable @Positive Long id) throws Exception {
+	public ResponseEntity<CategoriaResponseDTO> buscaCategoria(@PathVariable @Positive Long id) throws Exception {
 		return ResponseEntity.ok(service.buscar(id));
 	}
-	
+
+	@GetMapping("/{idCategoria}/chamados") // todos os chamados por categoria
+	public ResponseEntity<List<ChamadoResponseDTO>> buscaChamadosPorCategoria(
+			@PathVariable @Positive Long idCategoria) {
+
+		List<ChamadoResponseDTO> buscarChamadosPorCategoria = service.buscarChamadosPorCategoria(idCategoria);
+
+		return ResponseEntity.ok(buscarChamadosPorCategoria);
+	}
+
 	@DeleteMapping("/{id}")
-	public	ResponseEntity<Void> deletaCategoria (@PathVariable Long id) throws Exception {
+	public ResponseEntity<Void> deletaCategoria(@PathVariable Long id) throws Exception {
 		service.excluirCategoria(id);
 		return ResponseEntity.noContent().build();// 204 No Content;
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<CategoriaResponseDTO> atualizaCategoria(@Valid @PathVariable Long id, @Valid CategoriaRequestDto categoria){
-		service.atualiza(id, categoria);		
-		return null;
+	public ResponseEntity<CategoriaResponseDTO> atualizaCategoria(@PathVariable Long id,
+			@RequestBody CategoriaPatchRequestDto categoria) throws Throwable {
+		CategoriaResponseDTO newCategoria = service.atualiza(id, categoria);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(newCategoria);
 	}
 
 }

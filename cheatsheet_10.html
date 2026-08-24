@@ -129,6 +129,23 @@
   .topic-head h2{ font-size:19px; margin:0; }
   .topic-desc{ color:var(--text-muted); font-size:13.5px; margin:0 0 16px; line-height:1.5; }
 
+  .verb-group{
+    display:flex; align-items:center; gap:8px; margin:26px 0 12px; font-size:13px;
+    font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted);
+  }
+  .verb-group:first-of-type{ margin-top:8px; }
+  .verb-group .verb-pill{
+    font-size:11px; font-weight:700; letter-spacing:.4px; padding:3px 10px; border-radius:999px;
+    color:#fff; text-transform:uppercase;
+  }
+  .verb-group::after{ content:""; flex:1; height:1px; background:var(--border); }
+  .pill-get{ background:#0e7490; }
+  .pill-post{ background:#15803d; }
+  .pill-put{ background:#1d4ed8; }
+  .pill-patch{ background:#a16207; }
+  .pill-delete{ background:#b91c1c; }
+  .pill-extra{ background:#6b21a8; }
+
   .card{
     background:var(--bg-elevated); border:1px solid var(--border); border-radius:12px;
     padding:14px 16px 16px; margin-bottom:14px; box-shadow:var(--shadow);
@@ -247,7 +264,18 @@
         <span class="badge" style="background:var(--tag-controller)">Controller</span>
         <h2>Camada de entrada HTTP</h2>
       </div>
-      <p class="topic-desc">Recebe a requisição, delega ao Service e devolve a resposta. Não deve conter regra de negócio nem acesso direto ao banco. Todos os exemplos abaixo pertencem a uma mesma classe, <span class="mono">ProdutoController</span>.</p>
+      <p class="topic-desc">Recebe a requisição, delega ao Service e devolve a resposta. Não deve conter regra de negócio nem acesso direto ao banco. Todos os exemplos abaixo pertencem a uma mesma classe, <span class="mono">ProdutoController</span>, exceto onde indicado (sub-recursos de avaliação).</p>
+
+      <table class="status-table">
+        <thead><tr><th>Verbo</th><th>Anotação Spring</th><th>Idempotente?</th><th>Uso típico no dia a dia</th></tr></thead>
+        <tbody>
+          <tr><td class="code">GET</td><td><span class="mono">@GetMapping</span></td><td>Sim</td><td>Buscar/listar recursos, sem alterar estado</td></tr>
+          <tr><td class="code">POST</td><td><span class="mono">@PostMapping</span></td><td>Não</td><td>Criar um novo recurso ou disparar uma ação</td></tr>
+          <tr><td class="code">PUT</td><td><span class="mono">@PutMapping</span></td><td>Sim</td><td>Substituir por completo um recurso existente</td></tr>
+          <tr><td class="code">PATCH</td><td><span class="mono">@PatchMapping</span></td><td>Depende</td><td>Atualizar parcialmente um recurso (poucos campos)</td></tr>
+          <tr><td class="code">DELETE</td><td><span class="mono">@DeleteMapping</span></td><td>Sim</td><td>Remover um recurso (único ou em lote)</td></tr>
+        </tbody>
+      </table>
 
       <div class="card">
         <h3>Anotação base da classe</h3>
@@ -259,6 +287,8 @@ public class ProdutoController {
 }</code></pre>
         <div class="result-box"><span class="result-label">Resultado esperado</span><p>Ao subir a aplicação, o Spring registra automaticamente todas as rotas <span class="mono">/api/produtos/*</span> mapeadas nesta classe — nenhuma configuração manual de rota é necessária.</p></div>
       </div>
+
+      <h4 class="verb-group"><span class="verb-pill pill-get">GET</span> Leitura de recursos</h4>
 
       <div class="card">
         <h3>GET com parâmetro de caminho</h3>
@@ -282,6 +312,18 @@ public List&lt;ProdutoDTO&gt; listar(
       </div>
 
       <div class="card">
+        <h3>GET de sub-recurso (recurso aninhado)</h3>
+        <p class="theory"><strong>Quando usar:</strong> quando o recurso pertence claramente a outro (ex: avaliações de um produto) — é mais comum no dia a dia do que parece, sempre que há relação 1:N navegável pela API. <strong>Como funciona:</strong> o path combina os dois níveis, <span class="mono">/{produtoId}/avaliacoes</span>; o Spring extrai o <span class="mono">produtoId</span> como <span class="mono">@PathVariable</span> normalmente, e o Service usa esse id para filtrar. <strong>Relacionado a:</strong> chama <span class="mono">service.listarAvaliacoesDoProduto(produtoId)</span>, que internamente pode usar um <span class="mono">AvaliacaoRepository</span> com um método como <span class="mono">findByProdutoId(Long produtoId)</span>.</p>
+        <pre><code class="language-java">@GetMapping("/{produtoId}/avaliacoes")
+public List&lt;AvaliacaoDTO&gt; listarAvaliacoes(@PathVariable Long produtoId) {
+    return service.listarAvaliacoesDoProduto(produtoId);
+}</code></pre>
+        <div class="result-box"><span class="result-label">Resultado esperado</span><p><span class="mono">GET /api/produtos/7/avaliacoes</span> retorna <span class="mono">200 OK</span> com a lista de avaliações do produto 7. Se o produto não existir, o Service deve validar isso antes de buscar as avaliações, lançando <span class="mono">ProdutoNaoEncontradoException</span> (→ 404).</p></div>
+      </div>
+
+      <h4 class="verb-group"><span class="verb-pill pill-post">POST</span> Criação de recursos</h4>
+
+      <div class="card">
         <h3>POST com corpo validado</h3>
         <p class="theory"><strong>Quando usar:</strong> para criar um novo recurso a partir de dados enviados pelo cliente no corpo da requisição. <strong>Como funciona:</strong> <span class="mono">@RequestBody</span> desserializa o JSON recebido para um <span class="mono">ProdutoRequestDTO</span> (seção DTO); <span class="mono">@Valid</span> dispara as validações Bean Validation declaradas nesse DTO antes mesmo do corpo do método rodar. <strong>Relacionado a:</strong> delega a <span class="mono">ProdutoService.criar(dto)</span>, que persiste via <span class="mono">ProdutoRepository</span> e devolve um <span class="mono">ProdutoDTO</span> de resposta.</p>
         <pre><code class="language-java">@PostMapping
@@ -291,6 +333,20 @@ public ResponseEntity&lt;ProdutoDTO&gt; criar(@Valid @RequestBody ProdutoRequest
 }</code></pre>
         <div class="result-box"><span class="result-label">Resultado esperado</span><p>Uma requisição válida retorna <span class="mono">201 Created</span> com o produto criado (incluindo o id gerado). Um campo inválido (ex: nome em branco) nunca chega a executar este método — o Spring já responde <span class="mono">400 Bad Request</span> antes, por causa do <span class="mono">@Valid</span>.</p></div>
       </div>
+
+      <div class="card">
+        <h3>POST em sub-recurso</h3>
+        <p class="theory"><strong>Quando usar:</strong> para criar um recurso que só existe no contexto de outro — não faz sentido uma avaliação sem produto. <strong>Como funciona:</strong> igual ao POST comum, mas o path inclui o id do "pai" (<span class="mono">produtoId</span>), que é repassado ao Service junto com o corpo validado. <strong>Relacionado a:</strong> <span class="mono">service.avaliarProduto(produtoId, dto)</span>, que confirma que o produto existe antes de persistir a nova <span class="mono">Avaliacao</span> vinculada a ele.</p>
+        <pre><code class="language-java">@PostMapping("/{produtoId}/avaliacoes")
+public ResponseEntity&lt;AvaliacaoDTO&gt; avaliar(
+        @PathVariable Long produtoId, @Valid @RequestBody AvaliacaoRequestDTO dto) {
+    AvaliacaoDTO criada = service.avaliarProduto(produtoId, dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(criada); // 201
+}</code></pre>
+        <div class="result-box"><span class="result-label">Resultado esperado</span><p><span class="mono">POST /api/produtos/7/avaliacoes</span> com corpo válido retorna <span class="mono">201 Created</span> com a avaliação criada, já vinculada ao produto 7.</p></div>
+      </div>
+
+      <h4 class="verb-group"><span class="verb-pill pill-put">PUT</span> Substituição completa</h4>
 
       <div class="card">
         <h3>PUT (atualização completa)</h3>
@@ -303,6 +359,45 @@ public ResponseEntity&lt;ProdutoDTO&gt; atualizar(
         <div class="result-box"><span class="result-label">Resultado esperado</span><p>Retorna <span class="mono">200 OK</span> com o produto atualizado. Se o id não existir, o mesmo <span class="mono">ProdutoNaoEncontradoException</span> do GET por id é lançado, resultando em <span class="mono">404</span>.</p></div>
       </div>
 
+      <h4 class="verb-group"><span class="verb-pill pill-patch">PATCH</span> Atualização parcial</h4>
+
+      <div class="card">
+        <h3>PATCH com DTO parcial (mais comum no dia a dia)</h3>
+        <p class="theory"><strong>Quando usar:</strong> quando o cliente quer alterar só alguns campos, sem reenviar o recurso inteiro (ex: só o preço, em uma tela de "editar preço"). <strong>Como funciona:</strong> o DTO de patch tem todos os campos opcionais (podem vir <span class="mono">null</span>); o Service aplica apenas os campos que chegaram preenchidos, mantendo os demais como estavam na entidade. <strong>Relacionado a:</strong> diferente do <span class="mono">ProdutoRequestDTO</span> usado no POST/PUT, este é um DTO próprio — as anotações de validação (<span class="mono">@NotBlank</span>, etc.) geralmente não fazem sentido aqui, já que ausência de campo é esperada.</p>
+        <pre><code class="language-java">// DTO com campos opcionais — nada é @NotNull/@NotBlank
+public record ProdutoPatchDTO(String nome, BigDecimal preco) {}
+
+@PatchMapping("/{id}")
+public ResponseEntity&lt;ProdutoDTO&gt; atualizarParcial(
+        @PathVariable Long id, @RequestBody ProdutoPatchDTO patch) {
+    return ResponseEntity.ok(service.atualizarParcial(id, patch));
+}
+
+// No Service: aplica só o que veio preenchido
+public ProdutoDTO atualizarParcial(Long id, ProdutoPatchDTO patch) {
+    Produto produto = buscarOuLancar(id);
+    if (patch.nome() != null)  produto.setNome(patch.nome());
+    if (patch.preco() != null) produto.setPreco(patch.preco());
+    return ProdutoDTO.fromEntity(produto); // @Transactional cuida do UPDATE
+}</code></pre>
+        <div class="result-box"><span class="result-label">Resultado esperado</span><p><span class="mono">PATCH /api/produtos/7</span> com corpo <span class="mono">{"preco": 199.90}</span> altera só o preço e devolve <span class="mono">200 OK</span> com o produto completo atualizado — o nome permanece o que já estava salvo.</p></div>
+      </div>
+
+      <div class="card">
+        <h3>PATCH com JSON Merge Patch (ObjectMapper)</h3>
+        <p class="theory"><strong>Quando usar:</strong> quando você quer um PATCH genérico, sem criar um DTO parcial para cada entidade, seguindo o padrão HTTP oficial de merge patch. <strong>Como funciona:</strong> o cliente envia só os campos que quer mudar, com <span class="mono">Content-Type: application/merge-patch+json</span> (RFC 7396); o Spring injeta o corpo cru como <span class="mono">JsonNode</span>, e <span class="mono">ObjectMapper.readerForUpdating(...)</span> aplica esse JSON por cima da entidade já carregada, sobrescrevendo apenas os campos presentes. <strong>Relacionado a:</strong> usa o <span class="mono">ObjectMapper</span> do próprio Spring (já configurado para Jackson), injetado via construtor no Controller.</p>
+        <pre><code class="language-java">@PatchMapping(path = "/{id}", consumes = "application/merge-patch+json")
+public ResponseEntity&lt;ProdutoDTO&gt; mergePatch(
+        @PathVariable Long id, @RequestBody JsonNode patch) throws IOException {
+    Produto existente = service.buscarEntidadePorId(id);
+    Produto atualizado = objectMapper.readerForUpdating(existente).readValue(patch);
+    return ResponseEntity.ok(service.salvar(atualizado));
+}</code></pre>
+        <div class="result-box"><span class="result-label">Resultado esperado</span><p>Um PATCH com <span class="mono">{"preco": 199.90}</span> e o header <span class="mono">application/merge-patch+json</span> atualiza só esse campo na entidade em memória antes de salvar — o restante do objeto permanece intacto, mesmo sem um DTO específico para cada combinação de campos.</p></div>
+      </div>
+
+      <h4 class="verb-group"><span class="verb-pill pill-delete">DELETE</span> Remoção de recursos</h4>
+
       <div class="card">
         <h3>DELETE</h3>
         <p class="theory"><strong>Quando usar:</strong> para remover permanentemente um recurso. <strong>Como funciona:</strong> recebe o id pela URL e delega a <span class="mono">service.deletar(id)</span>; em caso de sucesso, devolve uma resposta sem corpo. <strong>Relacionado a:</strong> <span class="mono">ProdutoService.deletar</span>, que também usa o padrão "buscar ou lançar exceção" (seção Service) antes de remover.</p>
@@ -313,6 +408,24 @@ public ResponseEntity&lt;Void&gt; deletar(@PathVariable Long id) {
 }</code></pre>
         <div class="result-box"><span class="result-label">Resultado esperado</span><p><span class="mono">204 No Content</span>, sem corpo de resposta. Chamar DELETE de novo sobre o mesmo id já removido normalmente devolve <span class="mono">404</span>, pois o recurso não existe mais para o Service encontrar.</p></div>
       </div>
+
+      <div class="card">
+        <h3>DELETE em lote (múltiplos ids)</h3>
+        <p class="theory"><strong>Quando usar:</strong> quando a tela permite selecionar vários itens e excluir de uma vez (ex: uma tabela com checkboxes) — evitar N requisições separadas. <strong>Como funciona:</strong> os ids chegam como lista na query string via <span class="mono">@RequestParam</span>; o Service delega ao <span class="mono">JpaRepository.deleteAllById(ids)</span>, que remove todos em uma única operação. <strong>Relacionado a:</strong> ainda é considerado idempotente — repetir a mesma chamada com os mesmos ids não causa efeito colateral adicional, pois os ids já removidos simplesmente são ignorados.</p>
+        <pre><code class="language-java">@DeleteMapping
+public ResponseEntity&lt;Void&gt; deletarEmLote(@RequestParam List&lt;Long&gt; ids) {
+    service.deletarEmLote(ids);
+    return ResponseEntity.noContent().build(); // 204
+}
+
+// No Service:
+public void deletarEmLote(List&lt;Long&gt; ids) {
+    produtoRepository.deleteAllById(ids); // vem pronto no JpaRepository
+}</code></pre>
+        <div class="result-box"><span class="result-label">Resultado esperado</span><p><span class="mono">DELETE /api/produtos?ids=1,2,3</span> remove os três produtos de uma vez e retorna <span class="mono">204 No Content</span>. Se algum id não existir, o comportamento padrão do Spring Data é simplesmente ignorá-lo — vale decidir explicitamente se isso é aceitável para o seu caso de uso.</p></div>
+      </div>
+
+      <h4 class="verb-group"><span class="verb-pill pill-extra">Extra</span> Controle fino da resposta</h4>
 
       <div class="card">
         <h3>Paginação com Pageable</h3>
@@ -342,6 +455,10 @@ public Page&lt;ProdutoDTO&gt; listarPaginado(
         <li>Sempre devolva o status HTTP correto (201 ao criar, 204 ao deletar, 404 quando não encontrado).</li>
         <li>Versione a API quando fizer mudanças que quebram compatibilidade: <span class="mono">/api/v1/produtos</span>.</li>
         <li>Nunca retorne a Entity diretamente — sempre um DTO.</li>
+        <li><span class="mono">PUT</span> substitui o recurso inteiro (o cliente deve enviar todos os campos); <span class="mono">PATCH</span> altera só o que foi enviado — escolha com base no que a tela do cliente realmente envia, não por hábito.</li>
+        <li>Considere "soft delete" (uma coluna <span class="mono">ativo</span>/<span class="mono">deletadoEm</span>) em vez de exclusão física quando o histórico do recurso importa — nesse caso, <span class="mono">DELETE</span> vira um <span class="mono">UPDATE</span> internamente, mas a API continua expondo o verbo DELETE.</li>
+        <li>Endpoints de exclusão em lote continuam idempotentes: repetir a chamada com os mesmos ids não deve gerar erro, mesmo que parte deles já tenha sido removida antes.</li>
+        <li>Sub-recursos (<span class="mono">/produtos/{id}/avaliacoes</span>) só fazem sentido quando o filho não existe sem o pai — caso contrário, prefira um recurso de primeiro nível com filtro (<span class="mono">/avaliacoes?produtoId=7</span>).</li>
       </ul>
     </section>
 
