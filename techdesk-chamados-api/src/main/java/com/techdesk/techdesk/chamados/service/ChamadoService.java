@@ -2,9 +2,9 @@ package com.techdesk.techdesk.chamados.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.techdesk.techdesk.chamados.dto.ChamadoPatchRequestDto;
 import com.techdesk.techdesk.chamados.dto.ChamadoRequestDTO;
@@ -45,33 +45,32 @@ public class ChamadoService {
 
 		Chamado salvo = chamadoRepository.save(chamado);
 		return toResponseDTO(salvo);
+
 	}
 
-	public List<ChamadoResponseDTO> criarEmLote(List<ChamadoRequestDTO> dtos)  {
+	public List<ChamadoResponseDTO> criarEmLote(List<ChamadoRequestDTO> dtos) {
 
-		List<Chamado> chamados = dtos.stream()
-			.map(dto -> {
-			
-				Chamado chamado = new Chamado();
+		List<Chamado> chamados = dtos.stream().map(dto -> {
 
-				chamado.setTitulo(dto.titulo());
-				chamado.setDescricao(dto.descricao());
-				chamado.setDataAbertura(LocalDateTime.now());
-				chamado.setStatusChamado(StatusChamado.ABERTO);
+			Chamado chamado = new Chamado();
 
-				Categoria categoria = categoriaRepository.findById(dto.categoriaId())
-						.orElseThrow(() -> new CategoriaNaoEncontradaException(dto.categoriaId()));
-	
-				chamado.setCategoria(categoria);
+			chamado.setTitulo(dto.titulo());
+			chamado.setDescricao(dto.descricao());
+			chamado.setDataAbertura(LocalDateTime.now());
+			chamado.setStatusChamado(StatusChamado.ABERTO);
+
+			Categoria categoria = categoriaRepository.findById(dto.categoriaId())
+					.orElseThrow(() -> new CategoriaNaoEncontradaException(dto.categoriaId()));
+
+			chamado.setCategoria(categoria);
 
 			return chamado;
 
 		}).toList();
-			
+
 		List<Chamado> saveAll = chamadoRepository.saveAll(chamados);
-		
-		return saveAll.stream()
-				.map(chamado -> toResponseDTO(chamado)).toList();
+
+		return saveAll.stream().map(chamado -> toResponseDTO(chamado)).toList();
 	}
 
 	public List<ChamadoResponseDTO> listarTodos() throws Throwable {
@@ -141,7 +140,7 @@ public class ChamadoService {
 		return toResponseDTO(chamadoRepository.save(chamadoOld));
 	}
 
-	public static ChamadoResponseDTO toResponseDTO(Chamado c)  {
+	public static ChamadoResponseDTO toResponseDTO(Chamado c) {
 		return new ChamadoResponseDTO(c.getId(), c.getTitulo(), c.getDescricao(), c.getStatusChamado(),
 				c.getCategoria().getNome(), c.getDataAbertura());
 	}

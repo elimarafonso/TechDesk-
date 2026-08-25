@@ -20,6 +20,8 @@ import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
 import com.techdesk.techdesk.chamados.entity.StatusChamado;
 import com.techdesk.techdesk.chamados.service.ChamadoService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/chamado")
 public class ChamadoController {
@@ -31,7 +33,8 @@ public class ChamadoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ChamadoResponseDTO> criar(@RequestBody ChamadoRequestDTO dto) throws Throwable {
+	public ResponseEntity<ChamadoResponseDTO> criar(@RequestBody @Valid ChamadoRequestDTO dto) throws Throwable {
+	
 		ChamadoResponseDTO criado = service.criar(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(criado); // 201 Created
 	}
