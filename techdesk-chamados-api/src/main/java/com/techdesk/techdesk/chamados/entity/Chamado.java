@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import com.techdesk.techdesk.categorias.entity.Categoria;
+
 @Entity
 @Table(name = "chamados")
 public class Chamado {

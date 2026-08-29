@@ -1,4 +1,4 @@
-package com.techdesk.techdesk.chamados.exceptions;
+package com.techdesk.techdesk.categorias.exception;
 
 public class CategoriaNaoEncontradaException extends RuntimeException {
 	  

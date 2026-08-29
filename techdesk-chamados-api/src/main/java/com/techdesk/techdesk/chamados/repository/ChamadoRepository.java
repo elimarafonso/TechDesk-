@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.techdesk.techdesk.chamados.entity.Categoria;
+import com.techdesk.techdesk.categorias.entity.Categoria;
 import com.techdesk.techdesk.chamados.entity.Chamado;
 import com.techdesk.techdesk.chamados.entity.StatusChamado;
 

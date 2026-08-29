@@ -1,11 +1,11 @@
-package com.techdesk.techdesk.chamados.repository;
+package com.techdesk.techdesk.categorias.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.techdesk.techdesk.chamados.entity.Categoria;
+import com.techdesk.techdesk.categorias.entity.Categoria;
 
 
 public interface CategoriaRepository extends JpaRepository<Categoria, Long>{

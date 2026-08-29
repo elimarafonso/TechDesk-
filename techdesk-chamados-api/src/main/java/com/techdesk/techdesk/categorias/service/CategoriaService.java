@@ -1,22 +1,23 @@
-package com.techdesk.techdesk.chamados.service;
+package com.techdesk.techdesk.categorias.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.techdesk.techdesk.categorias.dto.CategoriaPatchRequestDto;
+import com.techdesk.techdesk.categorias.dto.CategoriaRequestDto;
+import com.techdesk.techdesk.categorias.dto.CategoriaResponseDTO;
+import com.techdesk.techdesk.categorias.entity.Categoria;
+import com.techdesk.techdesk.categorias.exception.CategoriaJaExisteException;
+import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
+import com.techdesk.techdesk.categorias.exception.CategoriaPossuiChamadosException;
+import com.techdesk.techdesk.categorias.repository.CategoriaRepository;
 import com.techdesk.techdesk.chamados.TechdeskChamadosApiApplication;
-import com.techdesk.techdesk.chamados.dto.CategoriaPatchRequestDto;
-import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
-import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
 import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
-import com.techdesk.techdesk.chamados.entity.Categoria;
 import com.techdesk.techdesk.chamados.entity.Chamado;
-import com.techdesk.techdesk.chamados.exceptions.CategoriaJaExisteException;
-import com.techdesk.techdesk.chamados.exceptions.CategoriaNaoEncontradaException;
-import com.techdesk.techdesk.chamados.exceptions.CategoriaPossuiChamadosException;
-import com.techdesk.techdesk.chamados.exceptions.ChamadoNaoEncontradoException;
-import com.techdesk.techdesk.chamados.repository.CategoriaRepository;
+import com.techdesk.techdesk.chamados.exception.ChamadoNaoEncontradoException;
 import com.techdesk.techdesk.chamados.repository.ChamadoRepository;
+import com.techdesk.techdesk.chamados.service.ChamadoService;
 
 @Service
 public class CategoriaService {
@@ -30,7 +31,7 @@ public class CategoriaService {
 		this.categoriaRepository = categoriaRepository;
 		this.techdeskChamadosApiApplication = techdeskChamadosApiApplication;
 		this.chamadoRepository = chamadoRepository;
-		
+
 	}
 
 	public CategoriaResponseDTO criar(CategoriaRequestDto categoriaDto) throws Throwable {
@@ -46,64 +47,48 @@ public class CategoriaService {
 
 	}
 
-	public List<CategoriaResponseDTO> findAll() throws Throwable {
-		return categoriaRepository.findAll().stream().map(t -> {
-			try {
-				return toCategoryDto(t);
-			} catch (Throwable e) {
-				new ChamadoNaoEncontradoException(e.getMessage());
-			}
-			return null;
-		}).toList();
+	public List<CategoriaResponseDTO> findAll() {
+		return categoriaRepository.findAll().stream().map(this::toCategoryDto).toList();
 	}
 
-	public List<ChamadoResponseDTO>  buscarChamadosPorCategoria( Long idCategoria)  {
-		
+	public List<ChamadoResponseDTO> buscarChamadosPorCategoria(Long idCategoria) {
+
 		Categoria categoria = categoriaRepository.findById(idCategoria)
-											.orElseThrow(() -> new CategoriaNaoEncontradaException(idCategoria));
-				
+				.orElseThrow(() -> new CategoriaNaoEncontradaException(idCategoria));
+
 		List<Chamado> chamadosPorCategoria = chamadoRepository.findByCategoria(categoria);
 
-		List<ChamadoResponseDTO> list = chamadosPorCategoria.stream().map(chamados -> ChamadoService.toResponseDTO(chamados)).toList();
-		
+		List<ChamadoResponseDTO> list = chamadosPorCategoria.stream()
+				.map(chamados -> ChamadoService.toResponseDTO(chamados)).toList();
+
 		return list;
 	}
-	
-	
-	public CategoriaResponseDTO buscar(Long id) throws Exception {
 
+	public CategoriaResponseDTO buscar(Long id) {
 		Categoria cat = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaNaoEncontradaException(id));
 		return toCategoryDto(cat);
-
 	}
 
-	public void excluirCategoria(Long id) throws Exception {
+	public void excluirCategoria(Long id) {
 		if (!categoriaRepository.existsById(id)) {
 			throw new CategoriaNaoEncontradaException(id);
-		}
-		if (chamadoRepository.existsByCategoriaId(id)) {
+		} else if (chamadoRepository.existsByCategoriaId(id)) {
 			throw new CategoriaPossuiChamadosException(id);
 		}
-
 		categoriaRepository.deleteById(id);
 	}
 
-	public CategoriaResponseDTO atualiza(Long id, CategoriaPatchRequestDto categoriaNew) throws Throwable {
-
+	public CategoriaResponseDTO atualiza(Long id, CategoriaPatchRequestDto categoriaNew) {
 		Categoria categoriaOld = categoriaRepository.findById(id)
 				.orElseThrow(() -> new CategoriaNaoEncontradaException(id));
-
 		if (categoriaNew.nome() != null)
 			categoriaOld.setNome(categoriaNew.nome());
-		
-			categoriaRepository.save(categoriaOld);
+		categoriaRepository.save(categoriaOld);
 		return toCategoryDto(categoriaOld);
-
 	}
 
 	private CategoriaResponseDTO toCategoryDto(Categoria toDto) {
 		return new CategoriaResponseDTO(toDto.getId(), toDto.getNome());
 	}
-
 
 }

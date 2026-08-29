@@ -6,16 +6,16 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import com.techdesk.techdesk.categorias.entity.Categoria;
+import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
+import com.techdesk.techdesk.categorias.repository.CategoriaRepository;
 import com.techdesk.techdesk.chamados.dto.ChamadoPatchRequestDto;
 import com.techdesk.techdesk.chamados.dto.ChamadoRequestDTO;
 import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
-import com.techdesk.techdesk.chamados.entity.Categoria;
 import com.techdesk.techdesk.chamados.entity.Chamado;
 import com.techdesk.techdesk.chamados.entity.StatusChamado;
-import com.techdesk.techdesk.chamados.exceptions.CategoriaNaoEncontradaException;
-import com.techdesk.techdesk.chamados.exceptions.ChamadoNaoEncontradoException;
-import com.techdesk.techdesk.chamados.exceptions.StatusChamadoNaoExisteException;
-import com.techdesk.techdesk.chamados.repository.CategoriaRepository;
+import com.techdesk.techdesk.chamados.exception.ChamadoNaoEncontradoException;
+import com.techdesk.techdesk.chamados.exception.StatusChamadoNaoExisteException;
 import com.techdesk.techdesk.chamados.repository.ChamadoRepository;
 
 //📁 techdesk-chamados-api/src/main/java/com/techdesk/chamados/service/ChamadoService.java

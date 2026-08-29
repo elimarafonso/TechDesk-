@@ -1,4 +1,4 @@
-package com.techdesk.techdesk.chamados.dto;
+package com.techdesk.techdesk.categorias.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

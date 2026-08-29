@@ -1,4 +1,4 @@
-package com.techdesk.techdesk.chamados.exceptions;
+package com.techdesk.techdesk.chamados.exception;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -9,6 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.techdesk.techdesk.categorias.exception.CategoriaJaExisteException;
+import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
+import com.techdesk.techdesk.categorias.exception.CategoriaPossuiChamadosException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

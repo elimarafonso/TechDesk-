@@ -1,6 +1,5 @@
-package com.techdesk.techdesk.chamados.controller;
+package com.techdesk.techdesk.categorias.controller;
 
-import com.techdesk.techdesk.chamados.repository.CategoriaRepository;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -15,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.techdesk.techdesk.chamados.dto.CategoriaPatchRequestDto;
-import com.techdesk.techdesk.chamados.dto.CategoriaRequestDto;
-import com.techdesk.techdesk.chamados.dto.CategoriaResponseDTO;
+import com.techdesk.techdesk.categorias.dto.CategoriaPatchRequestDto;
+import com.techdesk.techdesk.categorias.dto.CategoriaRequestDto;
+import com.techdesk.techdesk.categorias.dto.CategoriaResponseDTO;
+import com.techdesk.techdesk.categorias.repository.CategoriaRepository;
+import com.techdesk.techdesk.categorias.service.CategoriaService;
 import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
-import com.techdesk.techdesk.chamados.service.CategoriaService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -29,12 +29,10 @@ import jakarta.validation.constraints.Positive;
 @RequestMapping("api/categoria")
 public class CategoriaController {
 
-	private final CategoriaRepository categoriaRepository;
 	private final CategoriaService service;
 
 	public CategoriaController(CategoriaService service, CategoriaRepository categoriaRepository) {
 		this.service = service;
-		this.categoriaRepository = categoriaRepository;
 	}
 
 	@PostMapping
@@ -46,7 +44,6 @@ public class CategoriaController {
 
 	@GetMapping
 	public List<CategoriaResponseDTO> findAll() throws Throwable {
-
 		return service.findAll();
 	}
 
@@ -56,11 +53,8 @@ public class CategoriaController {
 	}
 
 	@GetMapping("/{idCategoria}/chamados") // todos os chamados por categoria
-	public ResponseEntity<List<ChamadoResponseDTO>> buscaChamadosPorCategoria(
-			@PathVariable @Positive Long idCategoria) {
-
+	public ResponseEntity<List<ChamadoResponseDTO>> buscaChamadosPorCategoria(@PathVariable @Positive Long idCategoria) {
 		List<ChamadoResponseDTO> buscarChamadosPorCategoria = service.buscarChamadosPorCategoria(idCategoria);
-
 		return ResponseEntity.ok(buscarChamadosPorCategoria);
 	}
 
@@ -72,9 +66,8 @@ public class CategoriaController {
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<CategoriaResponseDTO> atualizaCategoria(@PathVariable Long id,
-			@RequestBody CategoriaPatchRequestDto categoria) throws Throwable {
+			@RequestBody CategoriaPatchRequestDto categoria) {
 		CategoriaResponseDTO newCategoria = service.atualiza(id, categoria);
-
 		return ResponseEntity.status(HttpStatus.CREATED).body(newCategoria);
 	}
 

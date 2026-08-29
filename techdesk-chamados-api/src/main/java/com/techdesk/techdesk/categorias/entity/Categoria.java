@@ -1,7 +1,9 @@
-package com.techdesk.techdesk.chamados.entity;
+package com.techdesk.techdesk.categorias.entity;
 
 
 import java.util.List;
+
+import com.techdesk.techdesk.chamados.entity.Chamado;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "categorias")
+@Table(name = "com.techdesk.techdesk.categorias")
 public class Categoria {
 
     @Id
