@@ -1,4 +1,4 @@
-package com.techdesk.techdesk.chamados.exception;
+package com.techdesk.techdesk.exception;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.techdesk.techdesk.categorias.exception.CategoriaJaExisteException;
 import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
 import com.techdesk.techdesk.categorias.exception.CategoriaPossuiChamadosException;
+import com.techdesk.techdesk.chamados.exception.ChamadoNaoEncontradoException;
+import com.techdesk.techdesk.chamados.exception.StatusChamadoNaoExisteException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

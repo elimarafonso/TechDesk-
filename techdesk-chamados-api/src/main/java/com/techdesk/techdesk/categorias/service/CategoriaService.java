@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.techdesk.techdesk.TechdeskChamadosApiApplication;
 import com.techdesk.techdesk.categorias.dto.CategoriaPatchRequestDto;
 import com.techdesk.techdesk.categorias.dto.CategoriaRequestDto;
 import com.techdesk.techdesk.categorias.dto.CategoriaResponseDTO;
@@ -12,24 +13,20 @@ import com.techdesk.techdesk.categorias.exception.CategoriaJaExisteException;
 import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
 import com.techdesk.techdesk.categorias.exception.CategoriaPossuiChamadosException;
 import com.techdesk.techdesk.categorias.repository.CategoriaRepository;
-import com.techdesk.techdesk.chamados.TechdeskChamadosApiApplication;
 import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
 import com.techdesk.techdesk.chamados.entity.Chamado;
-import com.techdesk.techdesk.chamados.exception.ChamadoNaoEncontradoException;
 import com.techdesk.techdesk.chamados.repository.ChamadoRepository;
 import com.techdesk.techdesk.chamados.service.ChamadoService;
 
 @Service
 public class CategoriaService {
 
-	private final TechdeskChamadosApiApplication techdeskChamadosApiApplication;
 	private final CategoriaRepository categoriaRepository;
 	private final ChamadoRepository chamadoRepository;
 
 	public CategoriaService(CategoriaRepository categoriaRepository,
 			TechdeskChamadosApiApplication techdeskChamadosApiApplication, ChamadoRepository chamadoRepository) {
 		this.categoriaRepository = categoriaRepository;
-		this.techdeskChamadosApiApplication = techdeskChamadosApiApplication;
 		this.chamadoRepository = chamadoRepository;
 
 	}

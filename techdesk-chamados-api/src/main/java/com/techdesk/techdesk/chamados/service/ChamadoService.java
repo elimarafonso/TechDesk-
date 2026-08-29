@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.techdesk.techdesk.categorias.entity.Categoria;
 import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
@@ -18,9 +17,8 @@ import com.techdesk.techdesk.chamados.exception.ChamadoNaoEncontradoException;
 import com.techdesk.techdesk.chamados.exception.StatusChamadoNaoExisteException;
 import com.techdesk.techdesk.chamados.repository.ChamadoRepository;
 
-//📁 techdesk-chamados-api/src/main/java/com/techdesk/chamados/service/ChamadoService.java
 
-@Service // camada de regra de negócio — o Spring gerencia o ciclo de vida desse bean
+@Service 
 public class ChamadoService {
 
 	private final ChamadoRepository chamadoRepository;

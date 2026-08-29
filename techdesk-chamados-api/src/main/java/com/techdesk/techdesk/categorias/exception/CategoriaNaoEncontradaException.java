@@ -1,7 +1,8 @@
 package com.techdesk.techdesk.categorias.exception;
 
 public class CategoriaNaoEncontradaException extends RuntimeException {
-	  
+
+	private static final long serialVersionUID = 1L;
 	private final Long id;
 	
 	public CategoriaNaoEncontradaException(Long id) {

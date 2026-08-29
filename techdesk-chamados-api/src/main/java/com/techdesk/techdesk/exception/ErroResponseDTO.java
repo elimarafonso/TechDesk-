@@ -1,4 +1,4 @@
-package com.techdesk.techdesk.chamados.exception;
+package com.techdesk.techdesk.exception;
 
 import java.time.LocalDateTime;
 
