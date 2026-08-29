@@ -28,16 +28,8 @@ public class GlobalExceptionHandler {
 		ErroResponseDTO erro = new ErroResponseDTO(mensagem, 400, LocalDateTime.now());
 		return ResponseEntity.badRequest().body(erro);
 	}
-	// Captura qualquer outra exceção não prevista — rede de segurança final,
-	//evita vazar stack trace interna para quem consome a API.
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErroResponseDTO> handleGenerico(Exception ex) {
-	ErroResponseDTO erro = new ErroResponseDTO("Erro interno inesperado.", 500,
-	 LocalDateTime.now());
-	return ResponseEntity.internalServerError().body(erro);
-}
 
-@ExceptionHandler(CategoriaNaoEncontradaException.class)
+	@ExceptionHandler(CategoriaNaoEncontradaException.class)
 	public ProblemDetail categoriaNaoEncontrada(CategoriaNaoEncontradaException ex) {
 
 		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
@@ -93,4 +85,11 @@ public class GlobalExceptionHandler {
 		return problem;
 	}
 
+	// Captura qualquer outra exceção não prevista — rede de segurança final,
+	// evita vazar stack trace interna para quem consome a API.
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErroResponseDTO> handleGenerico(Exception ex) {
+		ErroResponseDTO erro = new ErroResponseDTO("Erro interno inesperado.", 500, LocalDateTime.now());
+		return ResponseEntity.internalServerError().body(erro);
+	}
 }
