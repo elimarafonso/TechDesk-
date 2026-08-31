@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import com.techdesk.techdesk.categorias.entity.Categoria;
+import com.techdesk.techdesk.tecnicos.entity.Tecnico;
+import com.techdesk.techdesk.usuarios.entity.Usuario;
 
 @Entity
 @Table(name = "chamados")

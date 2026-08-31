@@ -13,12 +13,14 @@ import com.techdesk.techdesk.chamados.entity.StatusChamado;
 //Repository: o Spring Data JPA gera as queries automaticamente a partir
 //da ASSINATURA do método — não escrevemos SQL manual aqui.
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
- List<Chamado> findByStatusChamado(StatusChamado statusChamado);
-// List<Chamado> findByTecnicoId(Long tecnicoId);
- 
- boolean existsByCategoriaId(Long categoriaId);
 
- List<Chamado> findByCategoria(Categoria categoria);
+	
+	List<Chamado> findByStatusChamado(StatusChamado statusChamado);
+	// List<Chamado> findByTecnicoId(Long tecnicoId);
+ 
+	boolean existsByCategoriaId(Long categoriaId);
+
+	List<Chamado> findByCategoria(Categoria categoria);
 	
 
  

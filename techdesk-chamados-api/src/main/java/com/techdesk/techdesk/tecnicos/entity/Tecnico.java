@@ -1,4 +1,4 @@
-package com.techdesk.techdesk.chamados.entity;
+package com.techdesk.techdesk.tecnicos.entity;
 
 import jakarta.persistence.*;
 
