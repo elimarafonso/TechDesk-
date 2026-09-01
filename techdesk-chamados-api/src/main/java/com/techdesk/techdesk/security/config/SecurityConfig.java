@@ -2,6 +2,9 @@ package com.techdesk.techdesk.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -10,29 +13,40 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.techdesk.techdesk.security.AutenticacaoFilter;
+import com.techdesk.techdesk.security.filter.SecurityFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	private final AutenticacaoFilter autenticacaoFilter;
 
-	public SecurityConfig(AutenticacaoFilter autenticacaoFilter) {
-		this.autenticacaoFilter = autenticacaoFilter;
-	}
+    private final SecurityFilter securityFilter;
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-	return http
-	.csrf(csrf -> csrf.disable()) // desnecessário para API stateless com JWT
-	.sessionManagement(s ->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/status").permitAll() // login/status liberados
-	.anyRequest().authenticated() ).addFilterBefore(autenticacaoFilter, UsernamePasswordAuthenticationFilter.class).build();
-	}
+    SecurityConfig(SecurityFilter securityFilter) {
+        this.securityFilter = securityFilter;
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(); // nunca salvar senha em texto puro
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }

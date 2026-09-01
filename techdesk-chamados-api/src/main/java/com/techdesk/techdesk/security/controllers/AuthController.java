@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.techdesk.techdesk.chamados.dto.ChamadoRequestDTO;
-import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
-import com.techdesk.techdesk.usuarios.dto.UsuarioRequestDTO;
-import com.techdesk.techdesk.usuarios.dto.UsuarioResponseDTO;
+import com.techdesk.techdesk.security.service.AuthService;
+import com.techdesk.techdesk.usuarios.dto.LoginRequestDTO;
+import com.techdesk.techdesk.usuarios.dto.LoginResponse;
+import com.techdesk.techdesk.usuarios.dto.RegisterRequest;
+import com.techdesk.techdesk.usuarios.dto.UserResponse;
 
 import jakarta.validation.Valid;
 
@@ -18,15 +19,21 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	
-	
-	
-	
-	@PostMapping("/registrar")
-	public ResponseEntity<UsuarioResponseDTO> criar(@RequestBody @Valid UsuarioRequestDTO dto){
-		
-		ChamadoResponseDTO criado = service.criar(dto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(criado); // 201 Created
+	private final AuthService authService;
+
+	AuthController(AuthService authService) {
+		this.authService = authService;
 	}
-	
+
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequestDTO request) {
+		LoginResponse response = authService.login(request);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/register")
+	public ResponseEntity<UserResponse> register(@RequestBody @Valid RegisterRequest request) {
+		UserResponse response = authService.register(request);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 }

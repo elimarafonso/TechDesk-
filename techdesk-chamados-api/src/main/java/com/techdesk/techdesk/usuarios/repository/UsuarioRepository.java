@@ -1,13 +1,14 @@
 package com.techdesk.techdesk.usuarios.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.techdesk.techdesk.usuarios.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
+  
+	// Usado pelo UserDetailsServiceImpl e também para checar duplicidade no registro
+    UserDetails findByLogin(String login);
 
-	Optional findByEmail(String email);
-
+    boolean existsByLogin(String login);
 }

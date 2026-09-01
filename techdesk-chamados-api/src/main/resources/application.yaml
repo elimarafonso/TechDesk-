@@ -12,3 +12,5 @@ spring:
     show-sql: true        # mostra o SQL gerado no console — essencial para aprender e depurar
 server:
   port: 8080
+jwt:
+  secret: umaChaveSecretaBemLongaEAleatoriaAquiPara2026TechDesk
