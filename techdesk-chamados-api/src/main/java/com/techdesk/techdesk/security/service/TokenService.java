@@ -1,8 +1,7 @@
-package com.techdesk.techdesk.usuarios.service;
+package com.techdesk.techdesk.security.service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,10 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String secret;
 
+    @Value("${jwt.expiration-minutes:1}")
+    private long expirationMinutes;
+    
+    
     public String generateToken(Usuario user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -47,7 +50,8 @@ public class TokenService {
     }
 
     private Instant gerarDataExpiracao() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    	Instant agora = Instant.now();
+    	return agora.plus(expirationMinutes,ChronoUnit.MINUTES) ;//LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
 

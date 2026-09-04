@@ -13,9 +13,7 @@ import com.techdesk.techdesk.usuarios.dto.UserResponse;
 import com.techdesk.techdesk.usuarios.entity.UserRole;
 import com.techdesk.techdesk.usuarios.entity.Usuario;
 import com.techdesk.techdesk.usuarios.repository.UsuarioRepository;
-import com.techdesk.techdesk.usuarios.service.TokenService;
 
-import jakarta.validation.constraints.NotNull;
 
 @Service
 public class AuthService {
