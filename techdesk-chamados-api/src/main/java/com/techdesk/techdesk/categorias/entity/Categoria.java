@@ -31,6 +31,12 @@ public class Categoria {
     
     public Categoria() {}
 
+	public Categoria(Long id, String nome, List<Chamado> chamados) {
+		this.id = id;
+		this.nome = nome;
+		this.chamados = chamados;
+	}
+    
     public Long getId() {return id; }
 
     public String getNome() { return nome; }
@@ -45,6 +51,8 @@ public class Categoria {
 	public String toString() {
 		return "Categoria [nome=" + nome + "]";
 	}
+
+
     
     
 }
