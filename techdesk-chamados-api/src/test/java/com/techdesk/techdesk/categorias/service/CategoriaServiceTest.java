@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import com.techdesk.techdesk.categorias.dto.CategoriaRequestDto;
 import com.techdesk.techdesk.categorias.dto.CategoriaResponseDTO;
 import com.techdesk.techdesk.categorias.entity.Categoria;
 import com.techdesk.techdesk.categorias.exception.CategoriaJaExisteException;
+import com.techdesk.techdesk.categorias.exception.CategoriaNaoEncontradaException;
 import com.techdesk.techdesk.categorias.repository.CategoriaRepository;
 import com.techdesk.techdesk.chamados.dto.ChamadoResponseDTO;
 import com.techdesk.techdesk.chamados.entity.Chamado;
@@ -158,11 +160,9 @@ class CategoriaServiceTest {
 		List<ChamadoResponseDTO> chamadosPorCategoria = categoriaService.buscarChamadosPorCategoria(1L);
 
 		assertNotNull(chamadosPorCategoria);
-
 		assertEquals(2, chamadosPorCategoria.size());
 
 		assertEquals(1L, chamadosPorCategoria.get(0).id());
-
 		assertEquals("Desenvolvimento", chamadosPorCategoria.get(0).categoriaNome());
 		assertEquals("Site com erro 500", chamadosPorCategoria.get(0).titulo());
 
@@ -172,6 +172,32 @@ class CategoriaServiceTest {
 
 		verify(categoriaRepository, times(1)).findById(1L);
 		verify(chamadoRepository, times(1)).findByCategoria(categoriaDesenvolvimento);
+		verifyNoMoreInteractions(categoriaRepository, chamadoRepository);
+	}
+
+	@Test
+	@DisplayName("Deve lancar excecao quando Categoria Nao Encontrada ")
+	public void deveLancarExcecaoQuandoCategoriaNaoEncontrada() {
+
+		when(categoriaRepository.findById(1L)).thenReturn(Optional.empty());
+
+		assertThrows(CategoriaNaoEncontradaException.class, () -> categoriaService.buscarChamadosPorCategoria(1L));
+
+		verify(categoriaRepository).findById(1L);
+		verifyNoMoreInteractions(categoriaRepository, chamadoRepository);
+	}
+
+	@Test
+	@DisplayName("Deve Excluir Uma Categoria")
+	public void deveExcluirUmaCategoria() {
+
+		when(categoriaRepository.existsById(1L)).thenReturn(true);
+		when(chamadoRepository.existsByCategoriaId(1L)).thenReturn(false);
+
+		categoriaService.excluirCategoria(1L);
+
+		verify(categoriaRepository, times(1)).deleteById(1L);
+
 	}
 
 }

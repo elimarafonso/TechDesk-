@@ -31,8 +31,7 @@ public class CategoriaService {
 
 	}
 
-	
-	//TESTE CRIADO
+	// TESTE CRIADO
 	public CategoriaResponseDTO criar(CategoriaRequestDto categoriaDto) throws Throwable {
 
 		categoriaRepository.findByNome(categoriaDto.nome()).ifPresent(categoria -> {
@@ -46,13 +45,11 @@ public class CategoriaService {
 
 	}
 
-	//TESTE CRIADO
+	// TESTE CRIADO
 	public List<CategoriaResponseDTO> findAll() {
 		return categoriaRepository.findAll().stream().map(this::toCategoryDto).toList();
 	}
-
-	/*#########################*/
-	/*#########################*/
+    //TESTE CRIADO
 	public List<ChamadoResponseDTO> buscarChamadosPorCategoria(Long idCategoria) {
 
 		Categoria categoria = categoriaRepository.findById(idCategoria)
@@ -65,8 +62,6 @@ public class CategoriaService {
 
 		return list;
 	}
-	/*#########################*/
-	/*#########################*/
 
 	// TESTE CRIADO
 	public CategoriaResponseDTO buscar(Long id) {
@@ -74,6 +69,9 @@ public class CategoriaService {
 		return toCategoryDto(cat);
 	}
 
+	
+	//##################
+	//##################
 	public void excluirCategoria(Long id) {
 		if (!categoriaRepository.existsById(id)) {
 			throw new CategoriaNaoEncontradaException(id);
@@ -82,6 +80,8 @@ public class CategoriaService {
 		}
 		categoriaRepository.deleteById(id);
 	}
+	//##################
+	//##################
 
 	public CategoriaResponseDTO atualiza(Long id, CategoriaPatchRequestDto categoriaNew) {
 		Categoria categoriaOld = categoriaRepository.findById(id)
