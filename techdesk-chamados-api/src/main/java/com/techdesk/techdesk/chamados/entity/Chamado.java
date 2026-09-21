@@ -58,6 +58,13 @@ public class Chamado {
 		// this.usuario = usuario;
 	}
 
+	public Chamado(Long id, String titulo, String descricao, Categoria categoria) {
+		this.id = id;
+		this.titulo = titulo;
+		this.descricao = descricao;
+		this.categoria = categoria;
+	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}

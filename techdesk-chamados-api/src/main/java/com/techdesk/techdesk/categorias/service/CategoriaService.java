@@ -31,6 +31,8 @@ public class CategoriaService {
 
 	}
 
+	
+	//TESTE CRIADO
 	public CategoriaResponseDTO criar(CategoriaRequestDto categoriaDto) throws Throwable {
 
 		categoriaRepository.findByNome(categoriaDto.nome()).ifPresent(categoria -> {
@@ -44,10 +46,13 @@ public class CategoriaService {
 
 	}
 
+	//TESTE CRIADO
 	public List<CategoriaResponseDTO> findAll() {
 		return categoriaRepository.findAll().stream().map(this::toCategoryDto).toList();
 	}
 
+	/*#########################*/
+	/*#########################*/
 	public List<ChamadoResponseDTO> buscarChamadosPorCategoria(Long idCategoria) {
 
 		Categoria categoria = categoriaRepository.findById(idCategoria)
@@ -60,7 +65,10 @@ public class CategoriaService {
 
 		return list;
 	}
+	/*#########################*/
+	/*#########################*/
 
+	// TESTE CRIADO
 	public CategoriaResponseDTO buscar(Long id) {
 		Categoria cat = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaNaoEncontradaException(id));
 		return toCategoryDto(cat);
